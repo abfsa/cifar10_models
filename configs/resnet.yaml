@@ -1,5 +1,5 @@
 model:
-  name: 'resnet18'
+  name: 'resnet'
   params:
     pre: false
     planes: [16, 16, 32, 64]

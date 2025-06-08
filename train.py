@@ -66,12 +66,22 @@ def validate(model, loader, criterion, device):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train CIFAR-10 with config file')
+
     parser.add_argument('--config', type=str, required=True,
                         help='path to YAML config file')
+    parser.add_argument('--model-name', type=str, default= None)
     args = parser.parse_args()
     with open(args.config, 'r', encoding='utf-8') as f:
         cfg = yaml.safe_load(f)
-    os.makedirs(cfg['save_dir'], exist_ok=True)
+
+    if args.model_name:
+        if isinstance(cfg.get('model'), dict):
+            cfg['model']['name'] = args.model_name
+        else:
+            cfg['model'] = {'name': args.model_name, 'params': {}}
+
+    save_dir = os.path.join(cfg['save_dir'], cfg['model']['name'])
+    os.makedirs(save_dir, exist_ok=True)
     device = torch.device('cuda' if cfg.get('gpu', False) and torch.cuda.is_available()
                           else 'cpu')
 
@@ -111,7 +121,7 @@ if __name__ == '__main__':
 
     # logger save dir
     best_acc = 0.0
-    metrics_csv = os.path.join(cfg['save_dir'], 'metrics.csv')
+    metrics_csv = os.path.join(save_dir, 'metrics.csv')
     with open(metrics_csv, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['epoch','train_loss','train_acc','val_loss','val_acc'])
@@ -138,7 +148,7 @@ if __name__ == '__main__':
         # save checkpoint
         if val_acc > best_acc:
             best_acc = val_acc
-            best_path = os.path.join(cfg['save_dir'], 'best_model.pth')
+            best_path = os.path.join(save_dir, 'best_model.pth')
             torch.save(model.state_dict(), best_path)
             print(f"Epoch {epoch}: New best model (val_acc={best_acc:.2f}%) saved to {best_path}")
 
@@ -146,7 +156,7 @@ if __name__ == '__main__':
             scheduler.step()
 
     # final model
-    final_path = os.path.join(cfg['save_dir'], 'final_model.pth')
+    final_path = os.path.join(save_dir, 'final_model.pth')
     torch.save(model.state_dict(), final_path)
     print(f"Training finished! Best val acc: {best_acc:.2f}%. Final model: {final_path}")
 
