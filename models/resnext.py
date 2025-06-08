@@ -84,6 +84,15 @@ def ResNeXt29_8x64d():
 def ResNeXt29_32x4d():
     return ResNeXt(num_blocks=[3,3,3], cardinality=32, bottleneck_width=4)
 
+def ResNeXt29_8x4d():
+    """深度 29，cardinality=8，base_width=4，参数量 ≈0.34M"""
+    return ResNeXt(num_blocks=[3,3,3], cardinality=8, bottleneck_width=4)
+
+def ResNeXt20_4x8d():
+    """深度 20，cardinality=4，base_width=8，参数量 ≈0.34M"""
+    return ResNeXt(num_blocks=[3,3,3], cardinality=4, bottleneck_width=8)
+
+
 def test_resnext():
     net = ResNeXt29_2x64d()
     x = torch.randn(1,3,32,32)

@@ -8,6 +8,11 @@ import math
 import random
 from PIL import Image
 from torchvision.transforms import functional as F
+import models
+import models.resnet
+import models.resnet_cifar
+import models.resnext
+import models.wideresnet
 
 class AverageMeter:
     """Computes and stores the average and current value"""
@@ -166,28 +171,6 @@ def get_dataloaders(data_dir, batch_size, valid_size=0.1,
     return train_loader, val_loader, test_loader
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def get_number_of_parameters(model):
     parameters_n = 0
     for parameter in model.parameters():
@@ -195,3 +178,5 @@ def get_number_of_parameters(model):
 
     return parameters_n
 
+# model = models.wideresnet.wrn_28_10()
+# print(get_number_of_parameters(model))
