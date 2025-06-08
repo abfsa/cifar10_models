@@ -186,11 +186,11 @@ class my_ResNet(ResNet):
             nn.Linear(128, num_classes)
         )
 
-def my_ResNet18():
-    return my_ResNet(BasicBlock, [2,2,2,2], planes = [16,16,32,64])
+def my_ResNet18(planes):
+    return my_ResNet(BasicBlock, [2,2,2,2], planes = planes)
 
-def my_ResNet34():
-    return my_ResNet(BasicBlock, [3,4,6,3], planes = [16,16,32,64])
+def my_ResNet34(planes):
+    return my_ResNet(BasicBlock, [3,4,6,3], planes = planes)
 
 def test():
     net = ResNet18()
