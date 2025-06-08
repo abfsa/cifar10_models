@@ -114,15 +114,15 @@ class ResNet(nn.Module):
 
 def ResNet18(pre = False):
     if pre:
-        return ResNet(PreActBlock, [2,2,2,2])
+        return ResNet(PreActBlock, [2,2,2,2], planes=[16,16,32,64])
     else:
-        return ResNet(BasicBlock, [2,2,2,2])
+        return ResNet(BasicBlock, [2,2,2,2], planes=[16,16,32,64])
     
 def ResNet34(pre = False):
     if pre:
-        return ResNet(PreActBlock, [3,4,6,3])
+        return ResNet(PreActBlock, [3,4,6,3], planes = [16,16,32,64])
     else:
-        return ResNet(BasicBlock, [3,4,6,3])
+        return ResNet(BasicBlock, [3,4,6,3], planes = [16,16,32,64])
 
 class my_ResNet(ResNet):
     def __init__(self, block, num_blocks,
@@ -137,10 +137,10 @@ class my_ResNet(ResNet):
         )
 
 def my_ResNet18():
-    return my_ResNet(BasicBlock, [2,2,2,2])
+    return my_ResNet(BasicBlock, [2,2,2,2], planes = [16,16,32,64])
 
 def my_ResNet34():
-    return my_ResNet(BasicBlock, [3,4,6,3])
+    return my_ResNet(BasicBlock, [3,4,6,3], planes = [16,16,32,64])
 
 def test():
     net = ResNet18()

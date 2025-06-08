@@ -1,0 +1,26 @@
+model:
+  name: 'resnet18'
+  params:
+    pre: false
+
+
+data_dir: 'data'
+save_dir: 'save'
+
+epochs: 100
+batch_size: 32
+lr: 0.1
+momentum: 0.9
+weight_decay: 5.0e-4
+gpu: true
+
+scheduler:
+  type: 'step'
+  step_size: 30
+  gamma: 0.1
+
+augmentation:
+  mixup: true
+  mixup_alpha: 0.8
+  cutout: true
+  cutout_length: 16

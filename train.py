@@ -7,11 +7,19 @@ import torch.nn as nn
 import torch.optim as optim
 from utils import *
 from models.resnet import *
+from models.lenet import *
 
 
 MODEL_REGISTRY = {
     'resnet18': ResNet18,
     'resnet34': ResNet34,
+    'myresnet18': my_ResNet18,
+    'myresnet34': my_ResNet34,
+    'lenet': LeNet,
+    'lenetresdropout': LeNetWithDropout,
+    
+
+
 }
 
 
@@ -61,15 +69,21 @@ if __name__ == '__main__':
     parser.add_argument('--config', type=str, required=True,
                         help='path to YAML config file')
     args = parser.parse_args()
-    with open(args.config, 'r') as f:
+    with open(args.config, 'r', encoding='utf-8') as f:
         cfg = yaml.safe_load(f)
     os.makedirs(cfg['save_dir'], exist_ok=True)
     device = torch.device('cuda' if cfg.get('gpu', False) and torch.cuda.is_available()
                           else 'cpu')
 
-    model_name = cfg['model']
+    model_cfg = cfg['model']
+    model_name = model_cfg['name']
     assert model_name in MODEL_REGISTRY, f"Unknown model: {model_name}"
-    model = MODEL_REGISTRY[model_name]().to(device)
+    model_params = model_cfg.get('params', {})
+    model = MODEL_REGISTRY[model_name](**model_params).to(device)
+
+
+
+
 
     # read training parameters from the config file
     criterion = nn.CrossEntropyLoss() #交叉熵损失
