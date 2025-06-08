@@ -9,6 +9,8 @@ from utils import *
 from models.resnet import *
 from models.lenet import *
 from models.resnet_cifar import *
+from models.resnext import *
+from models.wideresnet import *
 
 MODEL_REGISTRY = {
     'resnet18': ResNet18,
@@ -20,6 +22,7 @@ MODEL_REGISTRY = {
     'resnetcifar20': ResNet20_cifar,
     'resnetcifar32': ResNet32_cifar,
     'resnetcifar44': ResNet44_cifar,
+    'wrn_28_10': wrn_28_10,
 
 
 }
@@ -129,7 +132,7 @@ if __name__ == '__main__':
     elif sched_cfg.get('type') == 'cosine':
         scheduler = build_cosine_warmup_scheduler(
             optimizer,
-            warmup_epochs=5,
+            warmup_epochs=10,
             total_epochs=cfg['epochs']
 
         )
