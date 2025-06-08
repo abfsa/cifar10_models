@@ -23,8 +23,8 @@ MODEL_REGISTRY = {
     'resnetcifar32': ResNet32_cifar,
     'resnetcifar44': ResNet44_cifar,
     'wrn_28_10': wrn_28_10,
-    'resnext18_8x64': ResNeXt18_8x64d
-
+    'resnext18_8x64': ResNeXt18_8x64d,
+    'resnext29_4x64': ResNeXt29_4x64d,
 }
 
 

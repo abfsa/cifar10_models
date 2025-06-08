@@ -162,13 +162,15 @@ class ResNet(nn.Module):
             out = self.linear(out)
         return out
 
-def ResNet18(pre = False, planes = [32,64,128,256]):
+
+planes = [32,64,128,256]
+def ResNet18(pre = False, planes = planes):
     if pre:
         return ResNet(PreActBlock, [2,2,2,2], planes=planes)
     else:
         return ResNet(BasicBlock, [2,2,2,2], planes=planes)
     
-def ResNet34(pre = False, planes = [32,64,128,256]):
+def ResNet34(pre = False, planes = planes):
     if pre:
         return ResNet(PreActBlock, [3,4,6,3], planes = planes)
     else:
