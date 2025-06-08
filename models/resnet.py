@@ -72,17 +72,17 @@ class PreActBottleneck(nn.Module):
     pass
 
 class ResNet(nn.Module):
-    def __init__(self, block, num_blocks, num_classes=10):
+    def __init__(self, block, num_blocks, planes = [16,16,32,64], num_classes=10):
         super(ResNet, self).__init__()
-        self.in_planes = 64
+        self.in_planes = planes[0]
 
-        self.conv1 = conv3x3(3,64)
-        self.bn1 = nn.BatchNorm2d(64)
-        self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
-        self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
-        self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
-        self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
-        self.linear = nn.Linear(512*block.expansion, num_classes)
+        self.conv1 = conv3x3(3,planes[0])
+        self.bn1 = nn.BatchNorm2d(planes[0])
+        self.layer1 = self._make_layer(block, planes[0], num_blocks[0], stride=1)
+        self.layer2 = self._make_layer(block, planes[1], num_blocks[1], stride=2)
+        self.layer3 = self._make_layer(block, planes[2], num_blocks[2], stride=2)
+        self.layer4 = self._make_layer(block, planes[3], num_blocks[3], stride=2)
+        self.linear = nn.Linear(planes[3]*block.expansion, num_classes)
 
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1]*(num_blocks-1)
@@ -125,10 +125,12 @@ def ResNet34(pre = False):
         return ResNet(BasicBlock, [3,4,6,3])
 
 class my_ResNet(ResNet):
-    def __init__(self, block, num_blocks, num_classes=10):
-        super(my_ResNet, self).__init__(block, num_blocks, num_classes)
+    def __init__(self, block, num_blocks,
+                 planes=[16,16,32,64], num_classes=10):
+        super().__init__(block, num_blocks, planes, num_classes)
+        in_features = planes[-1] * block.expansion
         self.linear = nn.Sequential(
-            nn.Linear(512*block.expansion, 128),
+            nn.Linear(in_features, 128),
             nn.ReLU(),
             nn.Dropout(0.5),
             nn.Linear(128, num_classes)
