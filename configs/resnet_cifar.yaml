@@ -1,12 +1,11 @@
 model:
-  name: 'resnet'
+  name: 'resnet_cifar'
   params:
-    pre: false
-    planes: [16, 16, 32, 64]
+    base : 16
 
 
 data_dir: 'data'
-save_dir: 'save/resnet'
+save_dir: 'save/resnet_cifar'
 
 epochs: 100
 batch_size: 32

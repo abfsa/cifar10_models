@@ -8,7 +8,7 @@ import torch.optim as optim
 from utils import *
 from models.resnet import *
 from models.lenet import *
-
+from models.resnet_cifar import *
 
 MODEL_REGISTRY = {
     'resnet18': ResNet18,
@@ -17,7 +17,9 @@ MODEL_REGISTRY = {
     'myresnet34': my_ResNet34,
     'lenet': LeNet,
     'lenetresdropout': LeNetWithDropout,
-    
+    'resnetcifar20': ResNet20_cifar,
+    'resnetcifar32': ResNet32_cifar,
+    'resnetcifar44': ResNet44_cifar,
 
 
 }
@@ -64,6 +66,22 @@ def validate(model, loader, criterion, device):
             accs.update(acc, inputs.size(0))
     return losses.avg, accs.avg
 
+def build_cosine_warmup_scheduler(optimizer, warmup_epochs, total_epochs):
+    """
+    返回一个 LambdaLR scheduler：
+    - 前 warmup_epochs 轮 linear warmup 学习率从 0 → base_lr
+    - 剩余轮次做 cosine decay 从 base_lr → 0
+    """
+    def lr_lambda(current_epoch):
+        if current_epoch < warmup_epochs:
+            # 从 1/warmup_epochs → 1
+            return float(current_epoch + 1) / float(max(1, warmup_epochs))
+        # cosine 衰减
+        progress = float(current_epoch - warmup_epochs) / float(max(1, total_epochs - warmup_epochs))
+        return 0.5 * (1.0 + math.cos(math.pi * progress))
+
+    return optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train CIFAR-10 with config file')
 
@@ -108,6 +126,14 @@ if __name__ == '__main__':
             step_size=sched_cfg.get('step_size', 30),
             gamma=sched_cfg.get('gamma', 0.1)
         )
+    elif sched_cfg.get('type') == 'cosine':
+        scheduler = build_cosine_warmup_scheduler(
+            optimizer,
+            warmup_epochs=5,
+            total_epochs=cfg['epochs']
+
+        )
+
     else:
         scheduler = None
 
