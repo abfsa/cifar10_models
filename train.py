@@ -136,16 +136,11 @@ if __name__ == '__main__':
             )
 
         # save checkpoint
-        is_best = val_acc > best_acc
-        best_acc = max(best_acc, val_acc)
-        ckpt = {
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'best_acc': best_acc,
-        }
-        ckpt_path = os.path.join(cfg['save_dir'], f'epoch_{epoch}.pth')
-        save_checkpoint(ckpt, is_best, filename=ckpt_path)
+        if val_acc > best_acc:
+            best_acc = val_acc
+            best_path = os.path.join(cfg['save_dir'], 'best_model.pth')
+            torch.save(model.state_dict(), best_path)
+            print(f"Epoch {epoch}: New best model (val_acc={best_acc:.2f}%) saved to {best_path}")
 
         if scheduler:
             scheduler.step()

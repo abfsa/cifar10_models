@@ -2,10 +2,11 @@ model:
   name: 'resnet18'
   params:
     pre: false
+    planes: [16, 16, 32, 64]
 
 
 data_dir: 'data'
-save_dir: 'save'
+save_dir: 'save/resnet18'
 
 epochs: 100
 batch_size: 32
@@ -20,7 +21,7 @@ scheduler:
   gamma: 0.1
 
 augmentation:
-  mixup: true
+  mixup: false
   mixup_alpha: 0.8
-  cutout: true
+  cutout: false
   cutout_length: 16

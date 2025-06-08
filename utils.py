@@ -110,7 +110,7 @@ def mixup_criterion(criterion, pred, y_a, y_b, lam):
     return lam * criterion(pred, y_a) + (1 - lam) * criterion(pred, y_b)
 
 def get_dataloaders(data_dir, batch_size, valid_size=0.1,
-                    num_workers=4, pin_memory=True,
+                    num_workers=2, pin_memory=True,
                     use_cutout=False, cutout_length=16):
     """
     新增参数：
